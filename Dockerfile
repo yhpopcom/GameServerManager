@@ -1,13 +1,9 @@
-FROM debian:trixie-slim AS base
+# ---------- 基础依赖安装阶段 ----------
+FROM debian:trixie-slim AS dependencies
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    STEAM_USER=steam \
-    STEAM_HOME=/root \
-    STEAMCMD_DIR=/root/steamcmd \
-    GAMES_DIR=/root/games \
-    NODE_VERSION=22.17.0
+ENV DEBIAN_FRONTEND=noninteractive
 
-# 安装所有依赖（不执行 upgrade）并清理缓存
+# 安装系统依赖包
 RUN apt-get update \
     && dpkg --add-architecture i386 \
     && apt-get update \
@@ -18,7 +14,6 @@ RUN apt-get update \
         curl \
         jq \
         xdg-user-dirs \
-        # Node.js相关依赖
         gnupg \
         # Python相关依赖
         python3 \
@@ -42,7 +37,7 @@ RUN apt-get update \
         libopenal1:i386 \
         libtinfo6:i386 \
         libtcmalloc-minimal4:i386 \
-        # .NET和Mono相关依赖（ECO服务器等需要）
+        # .NET和Mono相关依赖
         libgdiplus \
         libc6-dev \
         libasound2 \
@@ -57,7 +52,7 @@ RUN apt-get update \
         libpango-1.0-0 \
         libx11-6 \
         libxt6 \
-        # Unity游戏服务端额外依赖（7日杀等）
+        # Unity游戏服务端依赖
         libsdl2-2.0-0:i386 \
         libsdl2-2.0-0 \
         libpulse0:i386 \
@@ -68,7 +63,6 @@ RUN apt-get update \
         libpugixml1v5 \
         libvulkan1 \
         libvulkan1:i386 \
-        # 额外的Unity引擎依赖（特别针对7日杀）
         libatk1.0-0:i386 \
         libxcomposite1 \
         libxcomposite1:i386 \
@@ -88,11 +82,12 @@ RUN apt-get update \
         libgtk-3-0:i386 \
         libdbus-1-3 \
         libdbus-1-3:i386 \
-        # ARK: Survival Evolved（方舟生存进化）服务器额外依赖
+        # ARK服务器依赖
         libelf1 \
         libelf1:i386 \
         libatomic1 \
         libatomic1:i386 \
+        # 系统工具
         nano \
         net-tools \
         netcat-openbsd \
@@ -106,40 +101,75 @@ RUN apt-get update \
         fonts-wqy-microhei \
         libc6 \
         libc6:i386 \
-    # 安装Node.js
-    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+        acl \
+        sudo \
+    && apt-get autoremove -y \
+    && apt-get autoclean \
+    && rm -rf /var/lib/apt/lists/*
+
+# ---------- 开发工具安装阶段 ----------
+FROM dependencies AS tools
+
+# 安装Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
-    # 安装Java 21（通过Adoptium仓库，使用 keyrings 方式，替代已弃用的 apt-key）
-    && install -d -m 0755 /usr/share/keyrings \
+    && npm config set registry https://registry.npmmirror.com \
+    && npm install -g npm@latest \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安装Java 21
+RUN install -d -m 0755 /usr/share/keyrings \
     && wget -qO /usr/share/keyrings/adoptium.gpg https://packages.adoptium.net/artifactory/api/gpg/key/public \
     && echo "deb [signed-by=/usr/share/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" > /etc/apt/sources.list.d/adoptium.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends temurin-21-jdk \
-    # 配置npm和pip镜像源
-    && npm config set registry https://registry.npmmirror.com \
-    && npm install -g npm@latest \
-    && pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-    # 设置locales
-    && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+    && rm -rf /var/lib/apt/lists/*
+
+# 配置Python pip镜像源
+RUN pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+# ---------- 用户权限配置阶段 ----------
+FROM tools AS base
+
+ENV STEAM_USER=steam \
+    STEAM_HOME=/root \
+    STEAMCMD_DIR=/root/steamcmd \
+    GAMES_DIR=/root/games \
+    NODE_VERSION=22.17.0
+
+# 设置locales
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
     && sed -i -e 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen \
-    && locale-gen \
-    # 创建steam用户和应用目录，并给予root权限
-    && useradd -m -s /bin/bash ${STEAM_USER} \
+    && locale-gen
+
+# 创建steam用户并配置权限
+RUN useradd -m -s /bin/bash ${STEAM_USER} \
     && usermod -aG root ${STEAM_USER} \
     && usermod -aG sudo ${STEAM_USER} \
-    && echo "${STEAM_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
-    && mkdir -p ${STEAMCMD_DIR} ${GAMES_DIR} /app \
+    && usermod -aG tty ${STEAM_USER} \
+    && echo "${STEAM_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# 配置steam用户的shell环境
+RUN echo "set +m" >> /home/steam/.bashrc \
+    && echo "export SHELL=/bin/bash" >> /home/steam/.bashrc \
+    && echo "export TERM=xterm-256color" >> /home/steam/.bashrc \
+    && echo "stty -echoctl 2>/dev/null || true" >> /home/steam/.bashrc \
+    && echo "set +o monitor" >> /home/steam/.bashrc
+
+# 创建目录和设置基础权限
+RUN mkdir -p ${STEAMCMD_DIR} ${GAMES_DIR} /app \
+    && ln -sf /root /home/steam/root_access \
     && chown -R ${STEAM_USER}:root /home/steam \
     && chown -R ${STEAM_USER}:root /app \
     && chmod -R 755 /home/steam \
     && chmod -R 755 /app \
-    # 清理apt缓存和临时文件
-    && apt-get autoremove -y \
-    && apt-get autoclean \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/* \
-    && rm -rf /var/tmp/* \
-    && rm -rf /var/cache/apt/archives/*
+    && chmod -R 755 /root
+
+# 设置ACL权限，确保steam用户对root目录有完全访问权限
+RUN setfacl -R -m u:${STEAM_USER}:rwx /root \
+    && setfacl -R -d -m u:${STEAM_USER}:rwx /root \
+    && chmod 666 /dev/tty* 2>/dev/null || true \
+    && chmod 666 /dev/pts/* 2>/dev/null || true
 
 # 设置环境变量
 ENV JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 \
@@ -186,13 +216,34 @@ COPY --from=builder /app/dist/package/ /root/
 COPY --from=builder /app/server/data/ /root/server/data/
 # 拷贝 Python 依赖清单并安装
 COPY --from=builder /app/server/src/Python/requirements.txt /tmp/requirements.txt
+# 安装Python依赖并配置最终权限
 RUN PIP_BREAK_SYSTEM_PACKAGES=1 pip3 install --no-cache-dir -r /tmp/requirements.txt \
     && rm -rf /root/.cache/pip /home/steam/.cache /tmp/* /var/tmp/* \
     && chmod -R 775 /root /root/server /root/server/data
 
+# 最终权限配置
+RUN setfacl -R -m u:steam:rwx /root \
+    && setfacl -R -d -m u:steam:rwx /root \
+    && echo "export ROOT_ACCESS=/root" >> /home/steam/.bashrc \
+    && echo "export PATH=/root:\$PATH" >> /home/steam/.bashrc \
+    && chown steam:tty /dev/tty* 2>/dev/null || true \
+    && chmod g+rw /dev/tty* 2>/dev/null || true
+
 # 复制启动脚本到root目录
 COPY start.sh /root/start.sh
 RUN chmod +x /root/start.sh
+
+# 创建steam用户专用的shell启动脚本
+RUN echo '#!/bin/bash' > /home/steam/steam_shell.sh \
+    && echo 'export SHELL=/bin/bash' >> /home/steam/steam_shell.sh \
+    && echo 'export TERM=xterm-256color' >> /home/steam/steam_shell.sh \
+    && echo 'set +m' >> /home/steam/steam_shell.sh \
+    && echo 'set +o monitor' >> /home/steam/steam_shell.sh \
+    && echo 'stty -echoctl 2>/dev/null || true' >> /home/steam/steam_shell.sh \
+    && echo 'cd /root' >> /home/steam/steam_shell.sh \
+    && echo 'exec /bin/bash --login "$@"' >> /home/steam/steam_shell.sh \
+    && chmod +x /home/steam/steam_shell.sh \
+    && chown steam:steam /home/steam/steam_shell.sh
 
 # 创建目录用于挂载游戏数据
 VOLUME ["${GAMES_DIR}"]

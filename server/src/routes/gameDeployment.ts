@@ -380,15 +380,22 @@ router.post('/install', authenticateToken, async (req: Request, res: Response) =
       // 根据操作系统构建SteamCMD执行命令
       const platform = os.platform()
       let steamcmdExecutable: string
+      let fullCommand: string
       
       if (platform === 'win32') {
         steamcmdExecutable = '.\\steamcmd.exe'
+        fullCommand = `${steamcmdExecutable} ${steamcmdCommand}`
       } else {
+        // Linux环境下确保使用root用户权限执行SteamCMD
         steamcmdExecutable = './steamcmd.sh'
+        // 检查当前用户是否为root，如果不是则使用sudo
+        const currentUser = process.env.USER || process.env.USERNAME || 'unknown'
+        if (currentUser === 'root') {
+          fullCommand = `${steamcmdExecutable} ${steamcmdCommand}`
+        } else {
+          fullCommand = `sudo -u root ${steamcmdExecutable} ${steamcmdCommand}`
+        }
       }
-      
-      // 构建完整的执行命令
-      const fullCommand = `${steamcmdExecutable} ${steamcmdCommand}`
       
       logger.info(`执行SteamCMD命令: ${fullCommand}`, {
         platform,
