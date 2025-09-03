@@ -1485,7 +1485,7 @@ const GameDeploymentPage: React.FC = () => {
     setSelectedGame({ key: gameKey, info: gameInfo })
     setInstanceName(gameInfo.game_nameCN)
     // 自动填充默认游戏路径
-    setInstallPath(generatePath(gameInfo.game_nameCN))
+    setInstallPath(generatePath(gameKey))
     setShowInstallModal(true)
     // 使用requestAnimationFrame确保DOM渲染完成后再触发动画
     requestAnimationFrame(() => {
