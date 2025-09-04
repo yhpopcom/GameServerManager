@@ -8,7 +8,8 @@ sections:
     fields:
       - name: "OptionSettings"
         display: "选项设置"
-        default: "(Difficulty=None,DayTimeSpeedRate=1.000000,NightTimeSpeedRate=1.000000,ExpRate=1.000000,PalCaptureRate=1.000000,PalSpawnNumRate=1.000000,PalDamageRateAttack=1.000000,PalDamageRateDefense=1.000000,PlayerDamageRateAttack=1.000000,PlayerDamageRateDefense=1.000000,PlayerStomachDecreaseRate=1.000000,PlayerStaminaDecreaseRate=1.000000,PlayerAutoHPRegeneRate=1.000000,PlayerAutoHpRegeneRateInSleep=1.000000,PalStomachDecreaseRate=1.000000,PalStaminaDecreaseRate=1.000000,PalAutoHPRegeneRate=1.000000,PalAutoHpRegeneRateInSleep=1.000000,BuildObjectDamageRate=1.000000,BuildObjectDeteriorationDamageRate=1.000000,CollectionDropRate=2.000000,CollectionObjectHpRate=1.000000,CollectionObjectRespawnSpeedRate=1.000000,EnemyDropItemRate=1.000000,DeathPenalty=None,bEnablePlayerToPlayerDamage=False,bEnableFriendlyFire=False,bEnableInvaderEnemy=True,bActiveUNKO=False,bEnableAimAssistPad=True,bEnableAimAssistKeyboard=False,DropItemMaxNum=3000,DropItemMaxNum_UNKO=100,BaseCampMaxNum=128,BaseCampWorkerMaxNum=15,DropItemAliveMaxHours=1.000000,bAutoResetGuildNoOnlinePlayers=False,AutoResetGuildTimeNoOnlinePlayers=72.000000,GuildPlayerMaxNum=20,PalEggDefaultHatchingTime=1.000000,WorkSpeedRate=1.500000,bIsMultiplay=False,bIsPvP=False,bCanPickupOtherGuildDeathPenaltyDrop=False,bEnableNonLoginPenalty=True,bEnableFastTravel=True,bIsStartLocationSelectByMap=True,bExistPlayerAfterLogout=False,bEnableDefenseOtherGuildPlayer=False,CoopPlayerMaxNum=4,ServerPlayerMaxNum=32,ServerName=\"Huaxiahulian Dedicated Server\",ServerDescription=\"幻兽帕鲁专用服务器购买官网www.huaxiahulian.com  客服电话17343019689（同微信）\",AdminPassword=\"\",ServerPassword=\"\",PublicPort=8211,PublicIP=\"\",RCONEnabled=False,RCONPort=25575,Region=\"\",bUseAuth=True,BanListURL=\"https://api.palworldgame.com/api/banlist.txt\")"
+        
+        default: "(Difficulty=None,RandomizerType=None,RandomizerSeed=\\\"\\\",bIsRandomizerPalLevelRandom=False,DayTimeSpeedRate=1.000000,NightTimeSpeedRate=1.000000,ExpRate=1.000000,PalCaptureRate=1.000000,PalSpawnNumRate=1.000000,PalDamageRateAttack=1.000000,PalDamageRateDefense=1.000000,PlayerDamageRateAttack=1.000000,PlayerDamageRateDefense=1.000000,PlayerStomachDecreaceRate=1.000000,PlayerStaminaDecreaceRate=1.000000,PlayerAutoHPRegeneRate=1.000000,PlayerAutoHpRegeneRateInSleep=1.000000,PalStomachDecreaceRate=1.000000,PalStaminaDecreaceRate=1.000000,PalAutoHPRegeneRate=1.000000,PalAutoHpRegeneRateInSleep=1.000000,BuildObjectHpRate=1.000000,BuildObjectDamageRate=1.000000,BuildObjectDeteriorationDamageRate=1.000000,CollectionDropRate=1.000000,CollectionObjectHpRate=1.000000,CollectionObjectRespawnSpeedRate=1.000000,EnemyDropItemRate=1.000000,DeathPenalty=All,bEnablePlayerToPlayerDamage=False,bEnableFriendlyFire=False,bEnableInvaderEnemy=True,bActiveUNKO=False,bEnableAimAssistPad=True,bEnableAimAssistKeyboard=False,DropItemMaxNum=3000,DropItemMaxNum_UNKO=100,BaseCampMaxNum=128,BaseCampWorkerMaxNum=15,DropItemAliveMaxHours=1.000000,bAutoResetGuildNoOnlinePlayers=False,AutoResetGuildTimeNoOnlinePlayers=72.000000,GuildPlayerMaxNum=20,BaseCampMaxNumInGuild=4,PalEggDefaultHatchingTime=72.000000,WorkSpeedRate=1.000000,AutoSaveSpan=30.000000,bIsMultiplay=False,bIsPvP=False,bHardcore=False,bPalLost=False,bCharacterRecreateInHardcore=False,bCanPickupOtherGuildDeathPenaltyDrop=False,bEnableNonLoginPenalty=True,bEnableFastTravel=True,bIsStartLocationSelectByMap=True,bExistPlayerAfterLogout=False,bEnableDefenseOtherGuildPlayer=False,bInvisibleOtherGuildBaseCampAreaFX=False,bBuildAreaLimit=False,ItemWeightRate=1.000000,CoopPlayerMaxNum=4,ServerPlayerMaxNum=32,ServerName=\\\"Default Palworld Server\\\",ServerDescription=\\\"\\\",AdminPassword=\\\"\\\",ServerPassword=\\\"\\\",PublicPort=8211,PublicIP=\\\"\\\",RCONEnabled=False,RCONPort=25575,Region=\\\"\\\",bUseAuth=True,BanListURL=\\\"https://api.palworldgame.com/api/banlist.txt\\\",RESTAPIEnabled=False,RESTAPIPort=8212,bShowPlayerList=False,ChatPostLimitPerMinute=30,CrossplayPlatforms=(Steam,Xbox,PS5,Mac),bIsUseBackupSaveData=True,LogFormatType=Text,SupplyDropSpan=180,EnablePredatorBossPal=True,MaxBuildingLimitNum=0,ServerReplicatePawnCullDistance=15000.000000,bAllowGlobalPalboxExport=True,bAllowGlobalPalboxImport=False,EquipmentDurabilityDamageRate=1.000000,ItemContainerForceMarkDirtyInterval=1.000000)"
         type: "nested"
         description: "嵌套的选项设置，包含所有游戏配置参数"
         nested_fields:
@@ -26,6 +27,28 @@ sections:
               - value: "Hard"
                 label: "困难"
             description: "游戏整体难度设置"
+          - name: "RandomizerType"
+            display: "随机化类型"
+            default: "None"
+            type: "select"
+            options:
+              - value: "None"
+                label: "无（未设置随机器）"
+              - value: "All"
+                label: "完全随机"
+              - value: "Partial"
+                label: "部分随机"
+            description: "随机化模式类型设置"
+          - name: "RandomizerSeed"
+            display: "随机化种子"
+            default: ""
+            type: "string"
+            description: "随机化模式的种子值"
+          - name: "bIsRandomizerPalLevelRandom"
+            display: "随机化帕鲁等级"
+            default: false
+            type: "boolean"
+            description: "是否启用帕鲁等级随机化"
           - name: "DayTimeSpeedRate"
             display: "日期时间加速率【0.1到5】"
             default: 1.0
@@ -71,12 +94,12 @@ sections:
             default: 1.0
             type: "number"
             description: "玩家受到伤害的倍率"
-          - name: "PlayerStomachDecreaseRate"
+          - name: "PlayerStomachDecreaceRate"
             display: "玩家饥饿度消耗倍率【0.1到5】"
             default: 1.0
             type: "number"
             description: "玩家饥饿度下降速度"
-          - name: "PlayerStaminaDecreaseRate"
+          - name: "PlayerStaminaDecreaceRate"
             display: "玩家体力消耗倍率【0.1到5】"
             default: 1.0
             type: "number"
@@ -91,12 +114,12 @@ sections:
             default: 1.0
             type: "number"
             description: "玩家睡觉时生命值恢复速度"
-          - name: "PalStomachDecreaseRate"
+          - name: "PalStomachDecreaceRate"
             display: "帕鲁饥饿度消耗倍率【0.1到5】"
             default: 1.0
             type: "number"
             description: "帕鲁饥饿度下降速度"
-          - name: "PalStaminaDecreaseRate"
+          - name: "PalStaminaDecreaceRate"
             display: "帕鲁体力消耗倍率【0.1到5】"
             default: 1.0
             type: "number"
@@ -111,6 +134,11 @@ sections:
             default: 1.0
             type: "number"
             description: "帕鲁睡觉时生命值恢复速度"
+          - name: "BuildObjectHpRate"
+            display: "建筑物生命值倍率【0.5到3】"
+            default: 1.0
+            type: "number"
+            description: "建筑物的生命值倍率"
           - name: "BuildObjectDamageRate"
             display: "建筑物受损倍率【0.5到3】"
             default: 1.0
@@ -123,7 +151,7 @@ sections:
             description: "建筑物随时间老化的损坏速度"
           - name: "CollectionDropRate"
             display: "采集物品掉落倍率【0.5到3】"
-            default: 2.0
+            default: 1.0
             type: "number"
             description: "采集资源时的掉落数量倍率"
           - name: "CollectionObjectHpRate"
@@ -143,7 +171,7 @@ sections:
             description: "击败敌人时掉落物品的数量倍率"
           - name: "DeathPenalty"
             display: "死亡惩罚类型"
-            default: "None"
+            default: "All"
             type: "select"
             options:
               - value: "None"
@@ -171,10 +199,10 @@ sections:
             type: "boolean"
             description: "是否启用入侵敌人事件"
           - name: "bActiveUNKO"
-            display: "启用UNKO系统"
+            display: "启用帕鲁便便系统"
             default: false
             type: "boolean"
-            description: "是否启用UNKO相关功能"
+            description: "是否启用便便相关功能"
           - name: "bEnableAimAssistPad"
             display: "启用手柄瞄准辅助"
             default: true
@@ -191,17 +219,17 @@ sections:
             type: "number"
             description: "地面上掉落物品的最大数量"
           - name: "DropItemMaxNum_UNKO"
-            display: "UNKO掉落物品最大数量【0到9999】"
+            display: "帕鲁便便掉落物品最大数量【0到9999】"
             default: 100
             type: "number"
-            description: "UNKO相关掉落物品的最大数量"
+            description: "帕鲁便便相关掉落物品的最大数量"
           - name: "BaseCampMaxNum"
             display: "据点最大数量【0到9999】"
             default: 128
             type: "number"
             description: "每个公会可建造的据点最大数量"
           - name: "BaseCampWorkerMaxNum"
-            display: "据点工作帕鲁最大数量【0到20】"
+            display: "据点工作帕鲁最大数量【0到25】"
             default: 15
             type: "number"
             description: "每个据点可分配的工作帕鲁最大数量"
@@ -225,16 +253,26 @@ sections:
             default: 20
             type: "number"
             description: "每个公会可容纳的最大玩家数量"
+          - name: "BaseCampMaxNumInGuild"
+            display: "公会内据点最大数量【1到100】"
+            default: 4
+            type: "number"
+            description: "单个公会可拥有的最大据点数量"
           - name: "PalEggDefaultHatchingTime"
             display: "帕鲁蛋默认孵化时间【0到9999】"
-            default: 1.0
+            default: 72.0
             type: "number"
             description: "帕鲁蛋孵化所需的默认时间（小时）"
           - name: "WorkSpeedRate"
             display: "工作速度倍率【0.1到5】"
-            default: 1.5
+            default: 1.0
             type: "number"
             description: "帕鲁工作效率的倍率"
+          - name: "AutoSaveSpan"
+            display: "自动保存间隔【1到300】"
+            default: 30.0
+            type: "number"
+            description: "自动保存的时间间隔（分钟）"
           - name: "bIsMultiplay"
             display: "多人游戏模式"
             default: false
@@ -245,6 +283,21 @@ sections:
             default: false
             type: "boolean"
             description: "是否启用PVP模式"
+          - name: "bHardcore"
+            display: "硬核模式"
+            default: false
+            type: "boolean"
+            description: "是否启用硬核游戏模式"
+          - name: "bPalLost"
+            display: "帕鲁丢失"
+            default: false
+            type: "boolean"
+            description: "是否启用帕鲁丢失机制"
+          - name: "bCharacterRecreateInHardcore"
+            display: "硬核模式角色重建"
+            default: false
+            type: "boolean"
+            description: "硬核模式下是否允许角色重建"
           - name: "bCanPickupOtherGuildDeathPenaltyDrop"
             display: "可拾取其他公会死亡掉落"
             default: false
@@ -275,24 +328,39 @@ sections:
             default: false
             type: "boolean"
             description: "是否启用对其他公会玩家的防御机制"
+          - name: "bInvisibleOtherGuildBaseCampAreaFX"
+            display: "隐藏其他公会据点区域特效"
+            default: false
+            type: "boolean"
+            description: "是否隐藏其他公会据点的区域特效"
+          - name: "bBuildAreaLimit"
+            display: "建筑区域限制"
+            default: false
+            type: "boolean"
+            description: "是否启用建筑区域限制"
+          - name: "ItemWeightRate"
+            display: "物品重量倍率【0.1到5】"
+            default: 1.0
+            type: "number"
+            description: "物品重量的倍率设置"
           - name: "CoopPlayerMaxNum"
             display: "合作玩家最大数量【1到32】"
             default: 4
             type: "number"
             description: "合作模式下的最大玩家数量"
           - name: "ServerPlayerMaxNum"
-            display: "服务器最大玩家数量【1到32】"
+            display: "服务器最大玩家数量【1到512】"
             default: 32
             type: "number"
             description: "服务器可容纳的最大玩家数量"
           - name: "ServerName"
             display: "服务器名称"
-            default: "Huaxiahulian Dedicated Server"
+            default: "Default Palworld Server"
             type: "string"
             description: "服务器显示名称"
           - name: "ServerDescription"
             display: "服务器描述"
-            default: "幻兽帕鲁专用服务器购买官网www.huaxiahulian.com  客服电话17343019689（同微信）"
+            default: ""
             type: "string"
             description: "服务器描述信息"
           - name: "AdminPassword"
@@ -340,3 +408,79 @@ sections:
             default: "https://api.palworldgame.com/api/banlist.txt"
             type: "string"
             description: "获取封禁列表的URL地址"
+          - name: "RESTAPIEnabled"
+            display: "启用REST API"
+            default: false
+            type: "boolean"
+            description: "是否启用REST API功能"
+          - name: "RESTAPIPort"
+            display: "REST API端口【1024到65535】"
+            default: 8212
+            type: "number"
+            description: "REST API服务的端口号"
+          - name: "bShowPlayerList"
+            display: "服务器内可以查看其他玩家列表"
+            default: false
+            type: "boolean"
+            description: "是否启用服务器内可以查看其他玩家列表"
+          - name: "ChatPostLimitPerMinute"
+            display: "每分钟聊天限制次数【1到100】"
+            default: 30
+            type: "number"
+            description: "每分钟允许发送的聊天消息数量限制"
+          
+          - name: "bIsUseBackupSaveData"
+            display: "使用备份存档数据"
+            default: true
+            type: "boolean"
+            description: "是否启用存档数据备份功能"
+          - name: "LogFormatType"
+            display: "日志格式类型"
+            default: "Text"
+            type: "select"
+            options:
+              - value: "Text"
+                label: "文本格式"
+              - value: "JSON"
+                label: "JSON格式"
+            description: "服务器日志的格式类型，Text为普通文本格式，JSON为结构化JSON格式便于日志分析"
+          - name: "SupplyDropSpan"
+            display: "陨石或空投的间隔【60到360】"
+            default: 180
+            type: "number"
+            description: "陨石或空投的间隔（分钟）"
+          - name: "EnablePredatorBossPal"
+            display: "启用猛兽 Boss 帕鲁"
+            default: true
+            type: "boolean"
+            description: "是否启用猛兽 Boss 帕鲁"
+          - name: "MaxBuildingLimitNum"
+            display: "最大建筑数量限制【0到99999】"
+            default: 0
+            type: "number"
+            description: "服务器最大建筑数量限制（0为无限制）"
+          - name: "ServerReplicatePawnCullDistance"
+            display: "玩家与帕鲁同步距离【1000到15000】"
+            default: 15000.0
+            type: "number"
+            description: "玩家与帕鲁同步距离设置"
+          - name: "bAllowGlobalPalboxExport"
+            display: "允许通过跨界帕鲁终端保存帕鲁的基因序列"
+            default: true
+            type: "boolean"
+            description: "是否允许通过跨界帕鲁终端保存帕鲁的基因序列"
+          - name: "bAllowGlobalPalboxImport"
+            display: "允许通过跨界帕鲁终端的基因序列复原帕鲁"
+            default: false
+            type: "boolean"
+            description: "是否允许通过跨界帕鲁终端的基因序列复原帕鲁"
+          - name: "EquipmentDurabilityDamageRate"
+            display: "装备耐久消耗倍率【0.1到5】"
+            default: 1.0
+            type: "number"
+            description: "装备耐久度消耗的倍率"
+          - name: "ItemContainerForceMarkDirtyInterval"
+            display: "物品容器强制标记间隔【0.1到60】"
+            default: 1.0
+            type: "number"
+            description: "物品容器强制标记为脏数据的时间间隔（秒）"
