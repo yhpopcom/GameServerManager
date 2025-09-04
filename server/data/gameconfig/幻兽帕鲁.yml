@@ -428,7 +428,14 @@ sections:
             default: 30
             type: "number"
             description: "每分钟允许发送的聊天消息数量限制"
-          
+          - name: "CrossplayPlatforms"
+            display: "跨平台支持"
+            default: "(Steam,Xbox,PS5,Mac)"  
+            type: "select"
+            options:
+              - value: "(Steam,Xbox,PS5,Mac)"
+                label: "全平台支持Steam,Xbox,PS5,Mac"  
+            description: "支持的跨平台列表，默认启用全平台互通（包含Steam、Xbox、PS5和Mac）"
           - name: "bIsUseBackupSaveData"
             display: "使用备份存档数据"
             default: true
